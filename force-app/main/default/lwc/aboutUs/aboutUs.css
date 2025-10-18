@@ -1,0 +1,52 @@
+/* Main card container */
+.about-us-card {
+    background: linear-gradient(145deg, #ffffff, #f9f9f9); /* Subtle gradient background */
+    border-radius: 12px; /* Softer, rounded corners */
+    padding: 24px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05); /* Soft shadow for a "floating" effect */
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
+    overflow: hidden; /* Ensures content respects the border radius */
+}
+
+/* Add a hover effect to make the card interactive */
+.about-us-card:hover {
+    transform: translateY(-5px); /* Lifts the card slightly on hover */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Card header section with icon and title */
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Title styling */
+.title {
+    font-size: 1.5rem; /* Larger title text */
+    font-weight: 600;
+    color: #1a237e; /* Using the dark blue from your estimator */
+    margin: 0;
+}
+
+/* Icon styling */
+.icon-style {
+    margin-right: 12px;
+    --sds-c-icon-color-foreground-default: #1a237e; /* Matching icon color to title */
+}
+
+/* Main content body styling */
+.card-body p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #37474f; /* Softer text color than pure black */
+    margin-bottom: 1rem;
+}
+
+/* Ensure the last paragraph has no bottom margin */
+.card-body p:last-child {
+    margin-bottom: 0;
+}

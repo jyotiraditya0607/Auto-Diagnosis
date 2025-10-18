@@ -1,0 +1,194 @@
+<template>
+    <div class="service-estimator slds-p-around_medium">
+
+        <div class="header-section slds-m-bottom_large">
+            <div class="icon-container">
+                <lightning-icon icon-name="utility:settings" alternative-text="Car Service" size="large"></lightning-icon>
+            </div>
+            <h1 class="main-title">Car Service Cost Estimator</h1>
+            <p class="subtitle">Select the services you need to get an instant cost estimate.</p>
+        </div>
+
+        <lightning-layout multiple-rows="true" pull-to-boundary="small">
+
+            <lightning-layout-item size="12" large-device-size="7" padding="around-small">
+                <div class="categories-container">
+                    <div class="category-section">
+                        <div class="category-header">
+                            <lightning-icon icon-name="utility:work_order_type" size="medium" class="category-icon"></lightning-icon>
+                            <h2>Engine Services</h2>
+                        </div>
+                        <div class="items-grid">
+                            <template for:each={engineServices} for:item="service">
+                                <div key={service.id} class="service-item">
+                                    <div class="item-checkbox">
+                                        <lightning-input
+                                                type="checkbox"
+                                                label={service.name}
+                                                value={service.id}
+                                                checked={service.selected}
+                                                onchange={handleServiceSelection}
+                                                class="slds-form-element_stacked">
+                                        </lightning-input>
+                                    </div>
+                                    <div class="item-price">₹{service.price}</div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="category-section">
+                        <div class="category-header">
+                            <lightning-icon icon-name="utility:warning" size="medium" class="category-icon"></lightning-icon>
+                            <h2>Brake Services</h2>
+                        </div>
+                        <div class="items-grid">
+                            <template for:each={brakeServices} for:item="service">
+                                <div key={service.id} class="service-item">
+                                    <div class="item-checkbox">
+                                        <lightning-input
+                                                type="checkbox"
+                                                label={service.name}
+                                                value={service.id}
+                                                checked={service.selected}
+                                                onchange={handleServiceSelection}
+                                                class="slds-form-element_stacked">
+                                        </lightning-input>
+                                    </div>
+                                    <div class="item-price">₹{service.price}</div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="category-section">
+                        <div class="category-header">
+                            <lightning-icon icon-name="utility:custom_apps" size="medium" class="category-icon"></lightning-icon>
+                            <h2>Transmission Services</h2>
+                        </div>
+                        <div class="items-grid">
+                            <template for:each={transmissionServices} for:item="service">
+                                <div key={service.id} class="service-item">
+                                    <div class="item-checkbox">
+                                        <lightning-input
+                                                type="checkbox"
+                                                label={service.name}
+                                                value={service.id}
+                                                checked={service.selected}
+                                                onchange={handleServiceSelection}
+                                                class="slds-form-element_stacked">
+                                        </lightning-input>
+                                    </div>
+                                    <div class="item-price">₹{service.price}</div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="category-section">
+                        <div class="category-header">
+                            <lightning-icon icon-name="utility:bolt" size="medium" class="category-icon"></lightning-icon>
+                            <h2>Electrical Services</h2>
+                        </div>
+                        <div class="items-grid">
+                            <template for:each={electricalServices} for:item="service">
+                                <div key={service.id} class="service-item">
+                                    <div class="item-checkbox">
+                                        <lightning-input
+                                                type="checkbox"
+                                                label={service.name}
+                                                value={service.id}
+                                                checked={service.selected}
+                                                onchange={handleServiceSelection}
+                                                class="slds-form-element_stacked">
+                                        </lightning-input>
+                                    </div>
+                                    <div class="item-price">₹{service.price}</div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="category-section">
+                        <div class="category-header">
+                            <lightning-icon icon-name="utility:like" size="medium" class="category-icon"></lightning-icon>
+                            <h2>Maintenance & Inspection</h2>
+                        </div>
+                        <div class="items-grid">
+                            <template for:each={maintenanceServices} for:item="service">
+                                <div key={service.id} class="service-item">
+                                    <div class="item-checkbox">
+                                        <lightning-input
+                                                type="checkbox"
+                                                label={service.name}
+                                                value={service.id}
+                                                checked={service.selected}
+                                                onchange={handleServiceSelection}
+                                                class="slds-form-element_stacked">
+                                        </lightning-input>
+                                    </div>
+                                    <div class="item-price">₹{service.price}</div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" large-device-size="5" padding="around-small">
+                <div class="estimate-summary">
+                    <div class="summary-header">
+                        <lightning-icon icon-name="utility:summarydetail" size="medium" class="summary-icon"></lightning-icon>
+                        <h2>Your Estimate</h2>
+                    </div>
+
+                    <template if:true={hasSelectedServices}>
+                        <div class="selected-services">
+                            <h3>Selected Services:</h3>
+                            <template for:each={selectedServicesList} for:item="service">
+                                <div key={service.id} class="selected-item">
+                                    <span class="service-name">{service.name}</span>
+                                    <span class="service-price">₹{service.price}</span>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                    <template if:false={hasSelectedServices}>
+                        <div class="slds-text-align_center slds-p-vertical_large slds-text-color_weak">
+                            Select services from the left to see your estimate.
+                        </div>
+                    </template>
+
+                    <div class="total-section">
+                        <div class="subtotal-row">
+                            <span>Subtotal</span>
+                            <span class="amount">₹{subtotal}</span>
+                        </div>
+                        <div class="labor-row">
+                            <span>Labor Cost</span>
+                            <span class="amount">₹{laborCost}</span>
+                        </div>
+                        <div class="tax-row">
+                            <span>GST (Est. 18%)</span>
+                            <span class="amount">₹{taxAmount}</span>
+                        </div>
+                        <div class="total-row">
+                            <span class="total-label">Total Estimated Cost</span>
+                            <span class="total-amount">₹{totalCost}</span>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <lightning-button label="Clear All" onclick={clearAllSelections} variant="neutral" class="clear-btn"></lightning-button>
+                        <lightning-button label="Generate Quote" onclick={generateQuote} variant="brand" class="quote-btn" disabled={isQuoteDisabled}></lightning-button>
+                    </div>
+
+                    <div class="disclaimer">
+                        <lightning-icon icon-name="utility:info_alt" size="small"></lightning-icon>
+                        <p>This is an estimate only. Final cost may vary.</p>
+                    </div>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>
+</template>

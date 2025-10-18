@@ -1,0 +1,584 @@
+<apex:page standardController="Invoicee__c" renderAs="pdf" showHeader="false" applyBodyTag="false">
+<html>
+<head>
+    <style>
+        @page {
+            size: A4;
+            margin: 8mm;
+        }
+        
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            color: #2d3748;
+            margin: 0;
+            padding: 0;
+            line-height: 1.4;
+            font-size: 13px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        
+        .invoice-container {
+            max-width: 100%;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        /* Premium Header Design */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 60%;
+            height: 200%;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            transform: rotate(-15deg);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .company-section {
+            flex: 1;
+        }
+        
+        .company-info h1 {
+            font-size: 28px;
+            margin: 0 0 8px 0;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .company-info .tagline {
+            font-size: 14px;
+            margin: 0 0 12px 0;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .company-info .contact {
+            font-size: 12px;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+        
+        .invoice-badge {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 16px 24px;
+            text-align: center;
+            min-width: 180px;
+        }
+        
+        .invoice-badge h2 {
+            margin: 0 0 5px 0;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .invoice-number {
+            font-size: 16px;
+            font-weight: 700;
+            opacity: 0.95;
+        }
+        
+        /* Two-Column Layout */
+        .main-content {
+            padding: 30px;
+        }
+        
+        .two-column-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        /* Elegant Cards */
+        .info-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .info-card h3 {
+            color: #4a5568;
+            font-size: 16px;
+            margin: 0 0 15px 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-card h3::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(226,232,240,0.5);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .label {
+            font-weight: 500;
+            color: #718096;
+            font-size: 12px;
+        }
+        
+        .value {
+            font-weight: 600;
+            color: #2d3748;
+            text-align: right;
+        }
+        
+        .status-completed {
+            color: #38a169;
+            background: #f0fff4;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid #9ae6b4;
+        }
+        
+        .status-pending {
+            color: #d69e2e;
+            background: #fefcbf;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid #f6e05e;
+        }
+        
+        /* Modern Table Design */
+        .charges-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: white;
+            padding: 16px 20px;
+            margin: 0 0 0 0;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px 12px 0 0;
+            letter-spacing: 0.5px;
+        }
+        
+        .table-container {
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 18px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 15px 18px;
+            border-bottom: 1px solid #f7fafc;
+            font-size: 13px;
+            transition: background-color 0.2s ease;
+        }
+        
+        tr:hover:not(.total-row) {
+            background-color: #f8fafc;
+        }
+        
+        tr:nth-child(even):not(.total-row) {
+            background-color: #fafbfc;
+        }
+        
+        .amount-cell {
+            text-align: right;
+            font-weight: 600;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        .total-row {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%) !important;
+            color: white !important;
+            font-weight: 700 !important;
+        }
+        
+        .total-row td {
+            border: none !important;
+            font-size: 15px !important;
+            padding: 18px !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .discount-amount {
+            color: #e53e3e !important;
+            font-weight: 600;
+        }
+        
+        /* Payment Information Styling */
+        .payment-card {
+            background: linear-gradient(135deg, #edf2f7 0%, #ffffff 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .payment-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .payment-status-paid {
+            color: #38a169;
+            background: #f0fff4;
+            padding: 6px 14px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 2px solid #9ae6b4;
+            display: inline-block;
+        }
+        
+        .payment-status-pending {
+            color: #d69e2e;
+            background: #fefcbf;
+            padding: 6px 14px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 2px solid #f6e05e;
+            display: inline-block;
+        }
+        
+        /* Premium Footer */
+        .footer {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -10%;
+            width: 60%;
+            height: 200%;
+            background: rgba(255,255,255,0.03);
+            border-radius: 50%;
+            transform: rotate(15deg);
+        }
+        
+        .footer-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .thank-you {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .footer p:last-child {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        /* Print Optimizations */
+        @media print {
+            body { 
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                background: white !important;
+            }
+            
+            .invoice-container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .two-column-section {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <!-- Premium Header -->
+        <div class="header">
+            <div class="header-content">
+                <div class="company-section">
+                    <div class="company-info">
+                        <div class="company-logo">
+                    		<img src="{!$Resource.CompanyLogo}" alt="Logo" width="20%" height="20%"/>
+                		</div>
+                        <h1>Automobile Service Centre</h1>
+                        <p class="tagline">Premium Vehicle Maintenance &amp; Repair Services</p>
+                        <div class="contact">
+                            <p>📍 Kaithalapur Flyover Rd, KPHB Phase 15, Kukatpally, Hyderabad, Telangana 500018</p>
+                            <p>📞 +91 9876543210 | ✉️ info@autoservice.com</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="invoice-badge">
+                    <h2>INVOICE</h2>
+                    <div class="invoice-number">{!Invoicee__c.Name}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Two Column Info Section -->
+            <div class="two-column-section">
+                <div class="info-card">
+                    <h3>Invoice Details</h3>
+                    <div class="detail-row">
+                        <span class="label">Invoice Number:</span>
+                        <span class="value">{!Invoicee__c.Name}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Invoice Date:</span>
+                        <span class="value">
+                            <apex:outputText value="{0,date,dd/MM/yyyy}">
+                                <apex:param value="{!Invoicee__c.CreatedDate}" />
+                            </apex:outputText>
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Status:</span>
+                        <span class="value">
+                            <span class="{!IF(Invoicee__c.Status__c == 'Paid', 'status-completed', 'status-pending')}">{!Invoicee__c.Status__c}</span>
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Due Date:</span>
+                        <span class="value">
+                            <apex:outputText value="{0,date,dd/MM/yyyy}">
+                                <apex:param value="{!Invoicee__c.Due_Date__c}" />
+                            </apex:outputText>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3>Service Information</h3>
+                    <div class="detail-row">
+                        <span class="label">Client Name:</span>
+                        <span class="value">{!Invoicee__c.Client_Name__c}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Vehicle:</span>
+                        <span class="value">{!Invoicee__c.Vehicle__r.Name}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Service Request:</span>
+                        <span class="value">{!Invoicee__c.Service_Request__r.Name}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Technician:</span>
+                        <span class="value">{!Invoicee__c.Technician__r.Name}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Service Charges Section -->
+            <div class="charges-section">
+                <h3 class="section-header">💰 Service Charges Breakdown</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">Description</th>
+                                <th style="width: 15%;">Qty</th>
+                                <th style="width: 20%;">Rate (₹)</th>
+                                <th style="width: 15%;">Amount (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Service Charges</strong><br/><small style="color: #718096;">Base Service Cost</small></td>
+                                <td>1</td>
+                                <td class="amount-cell">
+                                    <apex:outputText value="₹ {0,number,#,##0.00}">
+                                        <apex:param value="{!Invoicee__c.Labour_Cost__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td class="amount-cell">
+                                    <apex:outputText value="₹ {0,number,#,##0.00}">
+                                        <apex:param value="{!Invoicee__c.Labour_Cost__c}" />
+                                    </apex:outputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Service Tax (18%)</strong></td>
+                                <td>-</td>
+                                <td class="amount-cell">-</td>
+                                <td class="amount-cell">
+                                    <apex:outputText value="₹ {0,number,#,##0.00}">
+                                        <apex:param value="{!Invoicee__c.Tax__c}" />
+                                    </apex:outputText>
+                                </td>
+                            </tr>
+                            <apex:outputPanel rendered="{!Invoicee__c.Discount__c > 0}">
+                                <tr>
+                                    <td><strong>Discount Applied</strong></td>
+                                    <td>-</td>
+                                    <td class="amount-cell">-</td>
+                                    <td class="amount-cell discount-amount">
+                                        <apex:outputText value="- ₹ {0,number,#,##0.00}">
+                                            <apex:param value="{!Invoicee__c.Discount__c}" />
+                                        </apex:outputText>
+                                    </td>
+                                </tr>
+                            </apex:outputPanel>
+                            <tr class="total-row">
+                                <td colspan="3"><strong>🎯 TOTAL AMOUNT</strong></td>
+                                <td class="amount-cell">
+                                    <strong>
+                                        <apex:outputText value="₹ {0,number,#,##0.00}">
+                                            <apex:param value="{!Invoicee__c.Total_Amount__c}" />
+                                        </apex:outputText>
+                                    </strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Two Column Additional Info -->
+            <div class="two-column-section">
+                <div class="info-card">
+                    <h3>Service Notes</h3>
+                    <div style="color: #4a5568; font-size: 12px; line-height: 1.5;">
+                        <p style="margin: 5px 0;">🔧 All parts come with 12-month warranty</p>
+                        <p style="margin: 5px 0;">🚗 Complimentary vehicle wash included</p>
+                        <p style="margin: 5px 0;">📅 Next service due in 6 months/10,000 km</p>
+                        <p style="margin: 5px 0;">📋 Please retain invoice for warranty claims</p>
+                    </div>
+                </div>
+                
+                <div class="payment-card">
+                    <h3>Payment Information</h3>
+                    <div class="detail-row">
+                        <span class="label">Payment Status:</span>
+                        <span class="value">
+                            <span class="{!IF(Invoicee__c.Status__c == 'Paid', 'payment-status-paid', 'payment-status-pending')}">
+                                {!IF(Invoicee__c.Status__c == 'Paid', '✓ PAID', '⏳ ' + Invoicee__c.Status__c)}
+                            </span>
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Payment Method:</span>
+                        <span class="value">{!Invoicee__c.Payment_Method__c}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">GST Number:</span>
+                        <span class="value">29ABCDE1234F1Z5</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Invoice Amount:</span>
+                        <span class="value" style="font-weight: 700; color: #2d3748;">
+                            <apex:outputText value="₹ {0,number,#,##0.00}">
+                                <apex:param value="{!Invoicee__c.Total_Amount__c}" />
+                            </apex:outputText>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Premium Footer -->
+        <div class="footer">
+            <div class="footer-content">
+                <p class="thank-you">🙏 Thank You for Choosing Our Premium Service!</p>
+                <p>For support and queries: +91 9876543210 | This is a digitally generated invoice</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+</apex:page>

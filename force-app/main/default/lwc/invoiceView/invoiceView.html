@@ -1,0 +1,66 @@
+<template>
+    <lightning-card title="Invoices" icon-name="standard:orders">
+        <div class="invoice-grid">
+            <template for:each={invoiceToShow} for:item="invoice">
+                <div key={invoice.Id} class="invoice-card" data-id={invoice.Id} onclick={navigateToInvoice}>
+                    <div class="card-header">
+                        <div class="header-top">
+                            <h3>{invoice.Name}</h3>
+                            <span class={invoice.StatusClass}>{invoice.Status__c}</span>
+                        </div>
+                        <p class="client-name">{invoice.ClientName}</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="amount-section">
+                            <div class="total-amount">
+                                <span class="amount-label">Total Amount</span>
+                                <span class="amount-value">{invoice.TotalAmountDisplay}</span>
+                            </div>
+                        </div>
+                        <div class="invoice-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Service Request:</span>
+                                <span class="detail-value">{invoice.ServiceRequestName}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Vehicle:</span>
+                                <span class="detail-value">{invoice.VehicleName}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Technician:</span>
+                                <span class="detail-value">{invoice.TechnicianName}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Service Type:</span>
+                                <span class="detail-value">{invoice.ServiceTypeDisplay}</span>
+                            </div>
+                        </div>
+                        <div class="cost-breakdown">
+                            <div class="cost-row">
+                                <span>Labour: {invoice.LabourCostDisplay}</span>
+                                <span>Parts: {invoice.PartCostDisplay}</span>
+                            </div>
+                            <div class="cost-row">
+                                <span>Tax: {invoice.TaxDisplay}</span>
+                                <span>Discount: {invoice.DiscountDisplay}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="date-info">
+                            <span class="date-item">
+                                <strong>Invoice Date:</strong> {invoice.InvoiceDateDisplay}
+                            </span>
+                            <span class="date-item">
+                                <strong>Due Date:</strong> {invoice.DueDateDisplay}
+                            </span>
+                        </div>
+                        <div class="payment-method">
+                            <span><strong>Payment:</strong> {invoice.PaymentMethodDisplay}</span>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

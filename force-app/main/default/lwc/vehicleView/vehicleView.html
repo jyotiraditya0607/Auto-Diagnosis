@@ -1,0 +1,33 @@
+<template>
+    <lightning-card title="Vehicles" icon-name="standard:product">
+        <div class="vehicle-grid">
+            <template for:each={vehicleToShow} for:item="veh">
+                <div key={veh.Id} class="vehicle-card" data-id={veh.Id} onclick={navigateToVehicle}>
+                    <div class="card-header">
+                        <h3>{veh.Name}</h3>
+                        <p class="model">{veh.Model__c}</p>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Registration:</strong> {veh.Vehicle_Registratio__c}</p>
+                        <p><strong>KMs Driven:</strong> {veh.Kms_Driven__c}</p>
+                        <p><strong>Purchase Year:</strong> {veh.PurchaseYearDisplay}</p>
+                        <p><strong>Extended Warranty:</strong> {veh.ExtendedWarrantyDisplay}</p>
+                        <p><strong>VIN:</strong> {veh.VIN__c}</p>
+                        <p><strong>Warranty Eligible:</strong> {veh.WarrantyEligibleDisplay}</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="warranty-status">{veh.Warranty_Status__c}</span>
+                    </div>
+                </div>
+            </template>
+ 
+            <div class="vehicle-card add-card" onclick={navigateToNewVehicle}>
+                <div class="card-add-content">
+                    <span class="plus-icon">+</span>
+                    <h3 class="add-title">Add Your Vehicle</h3>
+                    <p class="add-subtitle">Click here to create a new vehicle record</p>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,142 @@
+/* Current Request Header Styling */
+.current-request-header {
+    border-left: 4px solid #0176D3;
+    background: linear-gradient(to right, #f3f3f3, #ffffff);
+    padding: 1rem;
+}
+
+/* Detail Cards */
+.detail-card {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 70px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.detail-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom Progress Bar */
+.custom-progress-bar {
+    position: relative;
+}
+
+.progress-track {
+    height: 12px;
+    background-color: #e5e5e5;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.5s ease, background-color 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-label {
+    font-weight: 600;
+    color: #3e3e3c;
+}
+
+/* Status Badge Enhancement */
+.status-badge {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Progress Section */
+.progress-section {
+    background: #fafaf9;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #e5e5e5;
+}
+
+/* History Items */
+.history-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.history-item {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.history-item:hover {
+    border-left-color: #0176D3;
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Progress Steps Enhancement */
+.slds-progress__marker {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.slds-progress__marker_icon-success {
+    background-color: #2E844A;
+}
+
+.slds-is-active .slds-progress__marker {
+    background-color: #0176D3;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .detail-card {
+        margin-bottom: 0.5rem;
+    }
+
+    .history-item {
+        margin-bottom: 1rem;
+    }
+
+    .current-request-header {
+        padding: 0.75rem;
+    }
+}
+
+/* Animation for loading states */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slds-card__body > div {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Scrollbar Styling */
+.history-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.history-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.history-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

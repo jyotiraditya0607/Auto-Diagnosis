@@ -1,0 +1,226 @@
+<template>
+    <lightning-card icon-name="standard:service_request">
+        <div slot="title">
+            <div class="slds-grid slds-grid_align-spread">
+                <h2 class="slds-text-heading_medium">Service Request Tracker</h2>
+                <lightning-button-icon
+                        icon-name="utility:refresh"
+                        variant="border-filled"
+                        alternative-text="Refresh"
+                        title="Refresh"
+                        onclick={handleRefresh}
+                        disabled={isLoading}>
+                </lightning-button-icon>
+            </div>
+        </div>
+
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Loading State -->
+            <template if:true={isLoading}>
+                <div class="slds-text-align_center slds-p-vertical_xx-large">
+                    <lightning-spinner
+                            alternative-text="Loading service requests..."
+                            size="medium"
+                            variant="brand">
+                    </lightning-spinner>
+                    <p class="slds-text-color_weak slds-m-top_medium">Loading your service requests...</p>
+                </div>
+            </template>
+
+            <!-- Main Content -->
+            <template if:false={isLoading}>
+                <!-- No Service Requests -->
+                <template if:false={hasCurrentRequest}>
+                    <div class="slds-text-align_center slds-p-vertical_xx-large">
+                        <lightning-icon
+                                icon-name="utility:info"
+                                size="large"
+                                variant="inverse">
+                        </lightning-icon>
+                        <h3 class="slds-text-heading_small slds-m-top_medium slds-text-color_weak">
+                            {noRequestMessage}
+                        </h3>
+                    </div>
+                </template>
+
+                <!-- Current Service Request -->
+                <template if:true={hasCurrentRequest}>
+                    <!-- Current Request Header -->
+                    <div class="current-request-header slds-box slds-theme_shade slds-m-bottom_large">
+                        <div class="slds-grid slds-grid_align-spread slds-wrap">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_3-of-4">
+                                <div class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <lightning-icon
+                                                icon-name={currentStatusInfo.icon}
+                                                size="medium"
+                                                variant={currentStatusInfo.variant}>
+                                        </lightning-icon>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <h2 class="slds-text-heading_medium slds-m-bottom_x-small">
+                                            {currentDetails.name}
+                                        </h2>
+                                        <div class="slds-text-color_weak">
+                                            <lightning-formatted-text value={currentDetails.serviceType}></lightning-formatted-text>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-text-align_right">
+                                <lightning-badge
+                                        label={currentStatusInfo.label}
+                                        variant={currentStatusInfo.variant}
+                                        class="status-badge">
+                                </lightning-badge>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service Details Grid -->
+                    <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_large">
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                            <div class="detail-card slds-box slds-box_x-small">
+                                <lightning-icon icon-name="utility:date_time" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                <div>
+                                    <div class="slds-text-color_weak slds-text-body_small">Service Date</div>
+                                    <div class="slds-text-heading_small">{currentDetails.serviceDate}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                            <div class="detail-card slds-box slds-box_x-small">
+                                <lightning-icon icon-name="utility:moneybag" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                <div>
+                                    <div class="slds-text-color_weak slds-text-body_small">Estimated Cost</div>
+                                    <div class="slds-text-heading_small">{currentDetails.estimatedCost}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                            <div class="detail-card slds-box slds-box_x-small">
+                                <lightning-icon icon-name="utility:preview" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                <div>
+                                    <div class="slds-text-color_weak slds-text-body_small">Vehicle</div>
+                                    <div class="slds-text-heading_small">{currentDetails.vehicleInfo}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                            <div class="detail-card slds-box slds-box_x-small">
+                                <lightning-icon icon-name="utility:user" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                <div>
+                                    <div class="slds-text-color_weak slds-text-body_small">Assigned Technician</div>
+                                    <div class="slds-text-heading_small">{currentDetails.technicianName}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Section -->
+                    <div class="progress-section slds-m-bottom_large">
+                        <h3 class="slds-text-heading_small slds-m-bottom_medium">Progress Status</h3>
+
+                        <!-- Progress Bar -->
+                        <div class="custom-progress-bar slds-m-bottom_medium">
+                            <div class="progress-track">
+                                <div class="progress-fill" style={progressBarStyle}></div>
+                            </div>
+                            <div class="progress-label slds-text-align_center slds-m-top_x-small">
+                                <lightning-formatted-number value={progressPercentage} format-style="percent" maximum-fraction-digits="0"></lightning-formatted-number>
+                            </div>
+                        </div>
+
+                        <!-- Status Steps -->
+                        <div class="slds-progress slds-progress_vertical">
+                            <ol class="slds-progress__list">
+                                <template for:each={statusStepsWithCompletion} for:item="step">
+                                    <li key={step.value} class="slds-progress__item">
+                                        <div class={step.stepClass}>
+                                            <template if:true={step.isCompleted}>
+                                                <lightning-icon icon-name="utility:check" size="x-small" variant="inverse"></lightning-icon>
+                                            </template>
+                                        </div>
+                                        <div class="slds-progress__item_content">
+                                            <div class="slds-text-heading_label slds-p-bottom_x-small">{step.label}</div>
+                                        </div>
+                                    </li>
+                                </template>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Service Description -->
+                    <div class="slds-box slds-box_x-small slds-theme_shade slds-m-bottom_large">
+                        <h3 class="slds-text-heading_small slds-m-bottom_small">Service Description</h3>
+                        <lightning-formatted-text value={currentDetails.description}></lightning-formatted-text>
+                    </div>
+
+                    <!-- Service History Section -->
+                    <template if:true={hasHistoricalRequests}>
+                        <div class="slds-border_top slds-p-top_medium">
+                            <div class="slds-grid slds-grid_align-spread slds-m-bottom_medium">
+                                <h3 class="slds-text-heading_small">
+                                    Service History
+                                    <lightning-badge label={totalRequestsCount} variant="inverse"></lightning-badge>
+                                </h3>
+                                <lightning-button
+                                        label={toggleButtonLabel}
+                                        onclick={handleToggleAllRequests}
+                                        variant="neutral"
+                                        size="small">
+                                </lightning-button>
+                            </div>
+
+                            <!-- History List -->
+                            <template if:true={showAllRequests}>
+                                <div class="history-list">
+                                    <template for:each={historicalRequests} for:item="request">
+                                        <div key={request.id}
+                                             class="history-item slds-box slds-box_x-small slds-m-bottom_small"
+                                             data-id={request.id}
+                                             onclick={handleSelectRequest}>
+                                            <div class="slds-grid slds-grid_align-spread slds-wrap">
+                                                <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-3">
+                                                    <div class="slds-media slds-media_small">
+                                                        <div class="slds-media__figure">
+                                                            <lightning-icon
+                                                                    icon-name={request.statusIcon}
+                                                                    size="small"
+                                                                    variant={request.statusVariant}>
+                                                            </lightning-icon>
+                                                        </div>
+                                                        <div class="slds-media__body">
+                                                            <h4 class="slds-text-heading_small">{request.name}</h4>
+                                                            <div class="slds-text-color_weak slds-text-body_small">
+                                                                {request.serviceType} | {request.serviceDate}
+                                                            </div>
+                                                            <template if:true={request.estimatedCost}>
+                                                                <div class="slds-text-color_weak slds-text-body_small">
+                                                                    Cost: {request.formattedCost}
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-text-align_right">
+                                                    <lightning-badge
+                                                            label={request.status}
+                                                            variant={request.statusVariant}>
+                                                    </lightning-badge>
+                                                    <div class="slds-text-color_weak slds-text-body_small slds-m-top_x-small">
+                                                        Updated: {request.lastModifiedDate}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

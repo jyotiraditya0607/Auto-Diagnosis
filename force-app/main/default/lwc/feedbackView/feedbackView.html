@@ -1,0 +1,42 @@
+<template>
+    <lightning-card title="Feedbacks" icon-name="standard:feedback">
+        <div class="feedback-grid">
+            <template for:each={feedbackToShow} for:item="feedback">
+                <div key={feedback.Id} class="feedback-card" data-id={feedback.Id} onclick={navigateToFeedback}>
+                    <div class="card-header">
+                        <h3>{feedback.Name}</h3>
+                        <div class="rating-container">
+                            <span class="rating-label">Rating:</span>
+                            <div class="stars">
+                                <template for:each={feedback.RatingStars} for:item="star">
+                                    <span key={star.id} class={star.cssClass}>★</span>
+                                </template>
+                            </div>
+                            <span class="rating-number">({feedback.RatingDisplay})</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="feedback-text">{feedback.FeedbackPreview}</p>
+                        <div class="feedback-details">
+                            <p><strong>Service Request:</strong> {feedback.ServiceRequestName}</p>
+                            <p><strong>Technician:</strong> {feedback.TechnicianName}</p>
+                            <p><strong>Contact:</strong> {feedback.ContactName}</p>
+                            <p><strong>Date:</strong> {feedback.FeedbackDateDisplay}</p>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class={feedback.SatisfiedClass}>{feedback.SatisfiedDisplay}</span>
+                    </div>
+                </div>
+            </template>
+
+            <div class="feedback-card add-card" onclick={navigateToNewFeedback}>
+                <div class="card-add-content">
+                    <span class="plus-icon">+</span>
+                    <h3 class="add-title">Add New Feedback</h3>
+                    <p class="add-subtitle">Click here to create a new feedback record</p>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

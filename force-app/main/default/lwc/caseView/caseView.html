@@ -1,0 +1,67 @@
+<template>
+    <lightning-card title="Cases" icon-name="standard:case">
+        <div class="case-grid">
+            <template for:each={caseToShow} for:item="caseItem">
+                <div key={caseItem.Id} class="case-card" data-id={caseItem.Id} onclick={navigateToCase}>
+                    <div class="card-header">
+                        <div class="header-top">
+                            <h3>{caseItem.CaseNumber}</h3>
+                            <div class="status-priority">
+                                <span class={caseItem.StatusClass}>{caseItem.Status}</span>
+                                <span class={caseItem.PriorityClass}>{caseItem.Priority}</span>
+                            </div>
+                        </div>
+                        <p class="case-subject">{caseItem.SubjectDisplay}</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="description-section">
+                            <p class="description-text">{caseItem.DescriptionPreview}</p>
+                        </div>
+                        <div class="case-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Contact:</span>
+                                <span class="detail-value">{caseItem.ContactName}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Account:</span>
+                                <span class="detail-value">{caseItem.AccountName}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Type:</span>
+                                <span class="detail-value">{caseItem.TypeDisplay}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Origin:</span>
+                                <span class="detail-value">{caseItem.OriginDisplay}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Owner:</span>
+                                <span class="detail-value">{caseItem.OwnerName}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="date-info">
+                            <span class="date-item">
+                                <strong>Created:</strong> {caseItem.CreatedDateDisplay}
+                            </span>
+                            <template if:true={caseItem.ClosedDate}>
+                                <span class="date-item">
+                                    <strong>Closed:</strong> {caseItem.ClosedDateDisplay}
+                                </span>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <div class="case-card add-card" onclick={navigateToNewCase}>
+                <div class="card-add-content">
+                    <span class="plus-icon">+</span>
+                    <h3 class="add-title">Create New Case</h3>
+                    <p class="add-subtitle">Click here to create a new case record</p>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

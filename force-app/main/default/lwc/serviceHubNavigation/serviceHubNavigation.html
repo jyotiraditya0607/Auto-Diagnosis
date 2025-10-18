@@ -1,0 +1,42 @@
+<!-- serviceHubNavigation.html -->
+<template>
+    <div class="service-hub-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1 class="welcome-text">{welcomeMessage}</h1>
+            <p class="subtitle">Choose a service to get started</p>
+        </div>
+
+        <!-- Navigation Grid -->
+        <div class="nav-grid">
+            <template for:each={navigationItems} for:item="item">
+                <div key={item.id}
+                     class="nav-card"
+                     data-url={item.url}
+                     onclick={handleNavigation}>
+                    <div class="card-header" data-gradient={item.gradient}>
+                        <div class="icon-wrapper">
+                            <lightning-icon
+                                    icon-name={item.icon}
+                                    size="large"
+                                    alternative-text={item.title}
+                                    class="card-icon">
+                            </lightning-icon>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">{item.title}</h3>
+                        <p class="card-description">{item.description}</p>
+                    </div>
+                    <div class="card-arrow">
+                        <lightning-icon
+                                icon-name="utility:forward"
+                                size="x-small"
+                                alternative-text="Navigate">
+                        </lightning-icon>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

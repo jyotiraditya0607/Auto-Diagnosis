@@ -1,0 +1,72 @@
+<template>
+    <lightning-card title="Service Center Locations" icon-name="standard:location">
+        <div class="map-container">
+            <!-- Map Component -->
+            <div class="map-section">
+                <lightning-map
+                    map-markers={mapMarkers}
+                    markers-title="Service Centers"
+                    zoom-level="8"
+                    center={mapCenter}
+                    class="service-center-map">
+                </lightning-map>
+            </div>
+            
+            <!-- Service Centers List -->
+            <div class="centers-list-section">
+                <div class="list-header">
+                    <h3>Available Service Centers</h3>
+                    <span class="centers-count">{serviceCentersCount} locations</span>
+                </div>
+                
+                <div class="centers-grid">
+                    <template for:each={serviceCenters} for:item="center">
+                        <div key={center.id} class="center-card" data-id={center.id} onclick={selectServiceCenter}>
+                            <div class="card-header">
+                                <h4>{center.name}</h4>
+                                <span class="status-badge status-active">{center.status}</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="info-row">
+                                    <lightning-icon icon-name="utility:location" size="xx-small"></lightning-icon>
+                                    <span>{center.address}</span>
+                                </div>
+                                <div class="info-row">
+                                    <lightning-icon icon-name="utility:phone_portrait" size="xx-small"></lightning-icon>
+                                    <span>{center.phone}</span>
+                                </div>
+                                <div class="info-row">
+                                    <lightning-icon icon-name="utility:email" size="xx-small"></lightning-icon>
+                                    <span>{center.email}</span>
+                                </div>
+                                <div class="info-row">
+                                    <lightning-icon icon-name="utility:clock" size="xx-small"></lightning-icon>
+                                    <span>{center.hours}</span>
+                                </div>
+                                <div class="services-section">
+                                    <span class="services-label">Services:</span>
+                                    <span class="services-text">{center.services}</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="distance-info">
+                                    <span class="distance">{center.distance}</span>
+                                </div>
+                                <div class="action-buttons">
+                                    <lightning-button 
+                                        label="Get Directions" 
+                                        variant="brand" 
+                                        size="small"
+                                        data-lat={center.latitude}
+                                        data-lng={center.longitude}
+                                        onclick={getDirections}>
+                                    </lightning-button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

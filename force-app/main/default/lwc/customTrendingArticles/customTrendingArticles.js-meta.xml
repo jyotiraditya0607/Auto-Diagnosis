@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>58.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property 
+                name="title" 
+                type="String" 
+                label="Card Title" 
+                default="Trending Articles"
+                description="The title displayed at the top of the component."/>
+            <property 
+                name="numberOfRecords" 
+                type="Integer" 
+                label="Number of Articles" 
+                default="5"
+                description="The maximum number of articles to display."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,83 @@
+<template>
+    <lightning-card title="Book a Service" icon-name="standard:service_appointment">
+        <div class="service-grid">
+            <template for:each={serviceRequestsToShow} for:item="service">
+                <div key={service.Id} class="service-card" data-id={service.Id} onclick={navigateToServiceRequest}>
+                    <div class="card-header">
+                        <h3>{service.Name}</h3>
+                        <p class="service-type">{service.Service_Type__c}</p>
+                        <span class="status-badge {service.StatusClass}">{service.Status__c}</span>
+                    </div>
+                    <div class="card-body">
+                        <p><b>Client:</b> {service.Client_Name__c}</p>
+                        <p><b>Vehicle:</b> <template if:true={service.Vehicle__r}>{service.Vehicle__r.Name}</template><template if:false={service.Vehicle__r}>Not Assigned</template></p>
+                        <p><b>Service Date:</b> {service.ServiceDateDisplay}</p>
+                        <p><b>Estimated Cost:</b> {service.EstimatedCostDisplay}</p>
+                        <p><b>Assigned Technician:</b> <template if:true={service.Assigned_Technician__r}>{service.Assigned_Technician__r.Name}</template><template if:false={service.Assigned_Technician__r}>Not Assigned</template></p>
+                        <p><b>Warranty Covered:</b> {service.WarrantyCoveredDisplay}</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="approval-status">
+                            <span class="claim-status {service.ClaimStatusClass}">{service.Claim_Approval_Status__c}</span>
+                            <span class="discount-status {service.DiscountStatusClass}">{service.Discount_Approval_Status__c}</span>
+                        </div>
+                        <template if:true={service.Feedback_Received__c}>
+                            <span class="feedback-badge">Feedback Received</span>
+                        </template>
+                    </div>
+                </div>
+            </template>
+ 
+            <div class="service-card add-card" onclick={showRecordTypeModal}>
+                <div class="card-add-content">
+                    <span class="plus-icon">+</span>
+                    <h3 class="add-title">Book New Service</h3>
+                    <p class="add-subtitle">Click here to request a new service appointment</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Record Type Selection Modal -->
+        <template if:true={showModal}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Select Service Type</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <p class="slds-text-body_regular slds-m-bottom_medium">
+                            Please select the type of service request you would like to create:
+                        </p>
+                        <div class="record-type-grid">
+                            <div class="record-type-card" data-record-type="Inspection_Request" onclick={selectRecordType}>
+                                <lightning-icon icon-name="standard:service_territory" size="large"></lightning-icon>
+                                <h3>Inspection Request</h3>
+                                <p>Schedule a vehicle inspection or diagnostic check</p>
+                            </div>
+                            <div class="record-type-card" data-record-type="Maintenance_Request" onclick={selectRecordType}>
+                                <lightning-icon icon-name="standard:maintenance_plan" size="large"></lightning-icon>
+                                <h3>Maintenance Request</h3>
+                                <p>Regular maintenance, oil change, tune-up services</p>
+                            </div>
+                            <div class="record-type-card" data-record-type="Repair_Request" onclick={selectRecordType}>
+                                <lightning-icon icon-name="standard:service_appointment" size="large"></lightning-icon>
+                                <h3>Repair Request</h3>
+                                <p>Fix mechanical issues, parts replacement</p>
+                            </div>
+                            <div class="record-type-card" data-record-type="Warranty_Claim_Request" onclick={selectRecordType}>
+                                <lightning-icon icon-name="standard:warranty_term" size="large"></lightning-icon>
+                                <h3>Warranty Claim Request</h3>
+                                <p>Submit a warranty claim for covered repairs</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </lightning-card>
+</template>

@@ -1,0 +1,58 @@
+<template>
+    <lightning-card>
+        <h2 slot="title" class="slds-card__header-title card-title">
+            {title}
+        </h2>
+        
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Loading State -->
+            <template if:false={articles.data}>
+                <template if:false={articles.error}>
+                    <div class="loading-container">
+                        <lightning-spinner alternative-text="Loading articles..." size="small"></lightning-spinner>
+                        <span class="loading-text">Loading trending articles...</span>
+                    </div>
+                </template>
+            </template>
+
+            <!-- Articles List -->
+            <template if:true={articles.data}>
+                <template if:true={hasArticles}>
+                    <ul class="slds-list_vertical articles-list">
+                        <template for:each={articles.data} for:item="article" for:index="index">
+                            <li key={article.Id} class="slds-list__item article-item">
+                                <a onclick={handleArticleClick} 
+                                   data-urlname={article.UrlName} 
+                                   class="article-link"
+                                   title={article.Title}>
+                                    <span class="article-number">{article.displayIndex}</span>
+                                    <span class="article-title">{article.Title}</span>
+                                </a>
+                            </li>
+                        </template>
+                    </ul>
+                </template>
+                
+                <!-- Empty State -->
+                <template if:false={hasArticles}>
+                    <template if:true={shouldShowEmptyState}>
+                        <div class="empty-state">
+                            <div class="empty-icon">📚</div>
+                            <div class="empty-message">No trending articles available</div>
+                            <div class="error-subtitle">Check back later for new content</div>
+                        </div>
+                    </template>
+                </template>
+            </template>
+
+            <!-- Error State -->
+            <template if:true={articles.error}>
+                <div class="error-container">
+                    <div class="error-icon">⚠️</div>
+                    <div class="error-message">Unable to load articles</div>
+                    <div class="error-subtitle">Please try again later or contact support if the issue persists</div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

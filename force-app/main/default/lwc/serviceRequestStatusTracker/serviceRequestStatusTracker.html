@@ -1,0 +1,85 @@
+<template>
+    <lightning-card title="Service Request Status Tracker" icon-name="standard:case">
+        <div class="slds-card__body slds-card__body_inner">
+            
+            <!-- Debug Information -->
+            <template if:true={showDebugInfo}>
+                <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small" role="alert">
+                    <h2><strong>Debug Information:</strong></h2>
+                    <p>Record ID: {recordId}</p>
+                    <p>Current Status: {currentStatus}</p>
+                    <p>Debug Info: {debugInfo}</p>
+                </div>
+            </template>
+
+            <!-- Loading State -->
+            <template if:true={isLoading}>
+                <div class="slds-text-align_center slds-m-vertical_large">
+                    <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+                    <p class="slds-m-top_small">Loading Service Request status...</p>
+                    <p class="slds-text-body_small">Record ID: {recordId}</p>
+                </div>
+            </template>
+            
+            <!-- Error State -->
+            <template if:true={hasError}>
+                <template if:false={isLoading}>
+                    <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                        <h2><strong>Unable to load Service Request data</strong></h2>
+                        <p>Please check:</p>
+                        <ul class="slds-list_dotted">
+                            <li>Record ID is valid: {recordId}</li>
+                            <li>Object API name matches your custom object</li>
+                            <li>Field API name matches your status field</li>
+                            <li>User has read permission to the record</li>
+                        </ul>
+                    </div>
+                </template>
+            </template>
+
+            <!-- Success State -->
+            <template if:false={isLoading}>
+                <template if:false={hasError}>
+                    <template if:true={currentStatus}>
+                        
+                        <div class="status-header slds-text-align_center slds-m-bottom_medium">
+                            <h3 class="slds-text-heading_medium">Current Status: 
+                                <span class="status-badge">{currentStatus}</span>
+                            </h3>
+                            <p class="slds-text-body_regular slds-m-top_x-small">{statusMessage}</p>
+                        </div>
+
+                        <div class="progress-container slds-m-bottom_medium">
+                            <lightning-progress-bar value={progressPercentage} size="large"></lightning-progress-bar>
+                            <div class="slds-text-align_center slds-m-top_x-small">
+                                <span class="slds-text-body_small">{progressPercentage}% Complete</span>
+                            </div>
+                        </div>
+
+                        <div class="status-tracker">
+                            <div class="slds-path">
+                                <ol class="slds-path__nav" role="tablist">
+                                    <template for:each={statusFlow} for:item="status">
+                                        <li class={status.cssClass} role="presentation" key={status.value}>
+                                            <a class="slds-path__link" role="tab">
+                                                <span class="slds-path__stage">
+                                                    <lightning-icon 
+                                                        icon-name={status.iconName}
+                                                        size="x-small"
+                                                        variant={status.iconVariant}>
+                                                    </lightning-icon>
+                                                </span>
+                                                <span class="slds-path__title">{status.label}</span>
+                                            </a>
+                                        </li>
+                                    </template>
+                                </ol>
+                            </div>
+                        </div>
+
+                    </template>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

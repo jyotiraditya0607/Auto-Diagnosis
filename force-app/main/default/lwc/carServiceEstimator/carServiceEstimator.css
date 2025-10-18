@@ -1,0 +1,187 @@
+/* Main Container */
+.service-estimator {
+    background-color: #f3f4f6;
+    border-radius: 8px;
+}
+
+/* Header Section */
+.header-section {
+    text-align: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.main-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a237e; /* Dark Blue */
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: #546e7a; /* Blue Grey */
+}
+
+/* Service Category Section */
+.category-section {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+    border: 1px solid #e0e0e0;
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #1a237e;
+}
+
+.category-header h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.service-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #fafafa;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.service-item:hover {
+    background-color: #f1f8e9; /* Light Green */
+    border-color: #1a237e;
+}
+
+.item-price {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a237e;
+    background-color: #e8eaf6;
+    padding: 0.25rem 0.75rem;
+    border-radius: 16px;
+}
+
+/* Custom Checkbox Label Styling */
+.slds-form-element_stacked .slds-form-element__label {
+    font-weight: 500;
+    color: #37474f;
+}
+
+/* Estimate Summary Section (Sticky on large screens) */
+.estimate-summary {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+    position: sticky;
+    top: 20px;
+}
+
+.summary-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #1a237e;
+}
+
+.summary-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.selected-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    margin-bottom: 0.25rem;
+    border-left: 3px solid #1a237e;
+    background-color: #f9f9f9;
+}
+
+.total-section {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: #f3f4f6;
+    border-radius: 6px;
+}
+
+.subtotal-row, .tax-row, .labor-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    color: #546e7a;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ccc;
+}
+
+.total-label {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.total-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a237e;
+}
+
+.amount {
+    font-weight: 600;
+    color: #37474f;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.action-buttons lightning-button {
+    flex-grow: 1;
+}
+
+/* Disclaimer */
+.disclaimer {
+    display: flex;
+    align-items: center;
+    margin-top: 1.5rem;
+    color: #546e7a;
+    font-size: 0.85rem;
+    font-style: italic;
+    background-color: #eceff1;
+    padding: 0.75rem;
+    border-radius: 6px;
+}
+
+.disclaimer lightning-icon {
+    margin-right: 0.5rem;
+}
